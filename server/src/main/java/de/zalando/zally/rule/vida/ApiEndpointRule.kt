@@ -1,10 +1,10 @@
 package de.zalando.zally.rule.zalando
-
 import de.zalando.zally.rule.Context
 import de.zalando.zally.rule.api.Check
 import de.zalando.zally.rule.api.Rule
 import de.zalando.zally.rule.api.Severity
 import de.zalando.zally.rule.api.Violation
+import de.zalando.zally.util.PatternUtil.isVersion
 
 @Rule(
     ruleSet = VidaRuleSet::class,
@@ -37,12 +37,24 @@ class ApiEndpointRule {
 // UNFINISHED, AND WILL ERROR
 
 class ApiEndpointRule {
+    val api_endpoints = "All API endpoints MUST begin with /api"
+    val versioned = "All API endpoints MUST be versioned."
+    val major_version = "Versioning MUST include only the major version in the URL path."
+    // val backwards_compatible = "Any other changes to the resource MUST be backwards compatible"
 
-// CHECK THAT VERSION EXISTS
     @Check(severity = Severity.MUST)
     fun validate(swagger: Swagger): Violation? {
-        val hasVersionInInfo = swagger.info != null && PatternUtil.hasVersionInInfo(swagger.info)
-        // TODO: update PatternUtil.java and figure out where the swagger in fun validate(swagger: Swagger) comes from
-        // TODO: 
+        // check that version exists
+        val version = swagger.info?.version
+        val desc = when {
+            version == null -> "Version does not exist"
+            !isVersion(version) -> "Specified version has incorrect format: $version"
+            else -> null
+        }
+        desc?.let { return Violation("$versioned $it", emptyList())}
+
+
+
+
     }
 }

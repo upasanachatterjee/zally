@@ -62,10 +62,6 @@ public class PatternUtil {
         return input.matches(VERSION_IN_URL_PATTERN);
     }
 
-    public static boolean hasVersion(String input) {
-        return input.matches();
-    }
-
     public static boolean isVersion(String input) {
         return input.matches(GENERIC_VERSION_PATTERN);
     }
